@@ -15,8 +15,6 @@ setup file.
 import os
 import setuptools
 
-# Using the grandparent directory (git repository) as package name
-
 package_dir = os.path.dirname(os.path.abspath(__file__))
 packages = setuptools.find_packages()
 
