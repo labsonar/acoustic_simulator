@@ -1,0 +1,11 @@
+{
+    "python.defaultInterpreterPath": "/usr/bin/python",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.autoSearchPaths": true,
+    "python.analysis.extraPaths": [
+      "./lps_libraries/acoustic_synthesis/src",
+      "./lps_libraries/signal_processing/src",
+      "./lps_libraries/utils/src",
+      "./lps_libraries/ml/src"
+    ]
+  }

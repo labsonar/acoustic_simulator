@@ -21,8 +21,8 @@ def _main():
     parser.add_argument(
         "--n_samples",
         type=int,
-        default=250,
-        help="Select the number of samples in dataset. (default: 250)",
+        default=1000,
+        help="Select the number of samples in dataset. (default: 1000)",
     )
     parser.add_argument(
         "--n-fixed-scenarios",
