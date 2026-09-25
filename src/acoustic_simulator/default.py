@@ -2,6 +2,7 @@ import lps_sp.acoustical.analysis as lps_analysis
 import lps_ml.audio_processors as ml_procs
 import lps_ml.core.processor as ml_proc
 import lps_ml.core.cv as ml_cv
+import lps_utils.quantities as lps_qty
 
 def get_file_processor() -> ml_procs.SampleProcessor:
 
@@ -17,6 +18,7 @@ def get_file_processor() -> ml_procs.SampleProcessor:
 
     audio_pipelines : list[ml_proc.AudioPipeline] = [
         ml_procs.ToFloatConverter(),
+        ml_procs.Resampler(lps_qty.Frequency.khz(16)),
         ml_procs.SpectralProcessor(analysis=analysis, params=params)
     ]
 

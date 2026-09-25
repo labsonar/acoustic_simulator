@@ -35,12 +35,7 @@ class Trainer:
         """
         Add classifier model and training arguments.
         """
-
-        ml_default.add_training_args(
-            parser,
-            default_output_dir=default_output_dir,
-        )
-
+        ml_default.add_training_args(parser, default_output_dir=default_output_dir)
         lps_cnn.CNN2D.add_args(parser)
 
     def get_fold_dir(self, fold: int) -> str:
@@ -86,7 +81,7 @@ class Trainer:
 
         return checkpoint.get_best()
 
-    def train(self, dm: ml_core.BaseDataModule) -> list[str]:
+    def train(self, dm: ml_core.BaseDataModule) -> dict[int, str]:
         """
         Train all CV folds of a DataModule.
         """
@@ -99,7 +94,7 @@ class Trainer:
         print(f"Training {n_folds} folds")
         print()
 
-        checkpoints = []
+        checkpoints = {}
 
         for fold in range(n_folds):
 
@@ -108,6 +103,6 @@ class Trainer:
                 fold=fold
             )
 
-            checkpoints.append(checkpoint)
+            checkpoints[fold] = checkpoint
 
         return checkpoints

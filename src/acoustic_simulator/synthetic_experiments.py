@@ -1,7 +1,7 @@
 import enum
 
 import lps_ml.datasets.synthetic as ml_syn
-import lps_ml.datasets.selection as ml_sel
+import lps_ml.core.selection as ml_sel
 import lps_ml.datasets as ml_db
 
 import acoustic_simulator.default as as_default
@@ -37,36 +37,55 @@ class SyntheticExperiment(enum.Enum):
             }
 
         if self == SyntheticExperiment.BOTTOM:
+
+            shallow_filter = ml_sel.ConstraintFilter(
+                constraints={
+                    "header": "SHALLOW_WATER",
+                    "value": ["yes"]
+                },
+                remove_elements_in=False
+            )
+
             return {
-                "basalt": [ml_sel.ConstraintFilter(
+                "basalt": [
+                    shallow_filter,
+                    ml_sel.ConstraintFilter(
                     constraints={
                         "header": "SEABED",
                         "value": ["Basalt"]
                     },
                     remove_elements_in = False
                 )],
-                "clay": [ml_sel.ConstraintFilter(
+                "clay": [
+                    shallow_filter,
+                    ml_sel.ConstraintFilter(
                     constraints={
                         "header": "SEABED",
                         "value": ["Clay"]
                     },
                     remove_elements_in = False
                 )],
-                "gravel": [ml_sel.ConstraintFilter(
+                "gravel": [
+                    shallow_filter,
+                    ml_sel.ConstraintFilter(
                     constraints={
                         "header": "SEABED",
                         "value": ["Gravel"]
                     },
                     remove_elements_in = False
                 )],
-                "sand": [ml_sel.ConstraintFilter(
+                "sand": [
+                    shallow_filter,
+                    ml_sel.ConstraintFilter(
                     constraints={
                         "header": "SEABED",
                         "value": ["Sand"]
                     },
                     remove_elements_in = False
                 )],
-                "silt": [ml_sel.ConstraintFilter(
+                "silt": [
+                    shallow_filter,
+                    ml_sel.ConstraintFilter(
                     constraints={
                         "header": "SEABED",
                         "value": ["Silt"]
