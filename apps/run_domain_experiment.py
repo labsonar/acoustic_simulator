@@ -42,7 +42,6 @@ def _print_dataset_info(name, dm):
     print(ml_utils.format_header(40))
     print(dm.to_df())
 
-
 def _main():
     """Main function for the dataset info tables."""
 
@@ -55,7 +54,7 @@ def _main():
 
     exp = as_exp.DomainExperiment()
 
-    datamodules = exp.build_datamodules()
+    datamodules = exp.build_domain_datamodules()
 
     trainers = {}
     checkpoints = {}

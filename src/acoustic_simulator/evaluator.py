@@ -207,6 +207,80 @@ class Evaluator:
         df.to_csv(metrics_filename, index=False)
         return results
 
+    def evaluate_fold_by_module(self, dm: ml_core.CombinedDataModule, fold: int) -> list[dict]:
+
+        dm.set_fold(fold)
+        model = self.load_model(fold)
+        loaders = dm.get_dataloaders_by_module("val")
+
+        fold_dir = os.path.join(self.base_dir,"module_eval",f"fold_{fold:02d}")
+        os.makedirs(fold_dir, exist_ok=True)
+
+        results = []
+
+        for module_name, dataloader in loaders.items():
+
+            filename = os.path.join(fold_dir, f"{module_name}.csv")
+
+            if os.path.isfile(filename):
+                predictions_df = pd.read_csv(filename)
+
+                targets = predictions_df["target"]
+                predictions = predictions_df["predict"]
+
+            else:
+
+                ids, targets, predictions = self.predict(model, dataloader)
+
+                predictions_df = pd.DataFrame({
+                    "id": ids,
+                    "target": targets,
+                    "predict": predictions,
+                })
+
+                predictions_df.to_csv(filename, index=False)
+
+            metrics = self.calculate_classification_metrics(targets, predictions)
+
+            results.append({
+                "module": module_name,
+                "fold": fold,
+                **metrics,
+            })
+
+        return results
+
+    def evaluate_by_module(self, dm: ml_core.CombinedDataModule) -> list[dict]:
+
+        eval_dir = os.path.join(self.base_dir, "module_eval")
+        os.makedirs(eval_dir, exist_ok=True)
+        metrics_filename = os.path.join(eval_dir, "metrics.csv")
+
+        if os.path.isfile(metrics_filename):
+            print(f"Skipping module evaluation: {metrics_filename} already exists.")
+            return pd.read_csv(metrics_filename).to_dict("records")
+
+        dm.setup()
+
+        results = []
+
+        for fold in self.checkpoints:
+            fold_results = self.evaluate_fold_by_module(dm=dm, fold=fold)
+            results.extend(fold_results)
+
+        metrics_df = pd.DataFrame(
+            results,
+            columns=[
+                "module",
+                "fold",
+                "acc",
+                "recall",
+                "f1",
+            ],
+        )
+        metrics_df.to_csv(metrics_filename, index=False)
+        return results
+
     def cross_evaluate_target(
         self,
         target_dm: ml_core.BaseDataModule,
